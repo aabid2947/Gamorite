@@ -14,6 +14,14 @@ Gamorite is a social gaming community application built with React Native and Ty
 *   **Dark/Neon Aesthetic**: A UI designed specifically for the gaming audience with gradients and modern typography.
 *   **Local Persistence**: All data (posts, user session) is persisted locally using AsyncStorage, making it a great standalone demo.
 
+## 📸 Screenshots
+
+<p align="center">
+  <img src="src/assets/Demo3.png" width="30%" alt="Community Feed" />
+  <img src="src/assets/Demo2.png" width="30%" alt="User Profile" />
+  <img src="src/assets/Demo1.png" width="30%" alt="Edit Profile" />
+</p>
+
 ##  Tech Stack
 
 *   **Framework**: React Native (0.82.1)
@@ -21,8 +29,10 @@ Gamorite is a social gaming community application built with React Native and Ty
 *   **State Management**: React Context API
 *   **Storage**: @react-native-async-storage/async-storage
 *   **Icons**: lucide-react-native
-*   **Graphics**: eact-native-svg
-*   **Media**: eact-native-image-picker
+*   **Graphics**: 
+eact-native-svg
+*   **Media**: 
+eact-native-image-picker
 
 ##  Getting Started
 
@@ -58,7 +68,7 @@ Gamorite is a social gaming community application built with React Native and Ty
 *   **Android**:
     `ash
     npx react-native run-android
-    `
+    `a
 
 *   **iOS**:
     `ash
