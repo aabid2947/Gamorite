@@ -168,18 +168,17 @@ export const CommunityFeedStyles = StyleSheet.create({
       alignItems: 'center',
       marginBottom: 4,
   },
-  imageIconBadge: {
+  uploadButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'rgba(255,255,255,0.1)',
       padding: 12,
-      backgroundColor: INPUT_BG,
-      borderTopRightRadius: 8,
-      borderBottomRightRadius: 8,
+      borderRadius: 8,
       borderWidth: 1,
       borderColor: GRAY_BORDER,
-      borderLeftWidth: 0,
-      marginBottom: 16,
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: 52 // Match input height roughly
+      width: '100%',
+      marginBottom: 8,
   },
   helperText: {
       color: GRAY_SHADE,

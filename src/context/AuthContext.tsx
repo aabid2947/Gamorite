@@ -5,7 +5,8 @@ import { User } from '../common-styles/interface';
 interface AuthContextData {
   user: User | null;
   loading: boolean;
-  signIn: (username: string) => Promise<void>;
+  signIn: (username: string, photoURL?: string) => Promise<void>;
+  updateProfile: (username: string, photoURL?: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -33,18 +34,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     loadStoredUser();
   }, []);
 
-  const signIn = async (username: string) => {
+  const signIn = async (username: string, photoURL?: string) => {
     try {
       const newUser: User = {
         uid: Date.now().toString(),
         displayName: username,
         email: '',
-        photoURL: null,
+        photoURL: photoURL || null,
       };
       setUser(newUser);
       await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(newUser));
     } catch (error) {
       console.error('Sign in failed', error);
+      throw error;
+    }
+  };
+
+  const updateProfile = async (username: string, photoURL?: string) => {
+    if (!user) return;
+    try {
+      const updatedUser: User = {
+        ...user,
+        displayName: username,
+        photoURL: photoURL || user.photoURL,
+      };
+      setUser(updatedUser);
+      await AsyncStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updatedUser));
+    } catch (error) {
+      console.error('Update profile failed', error);
       throw error;
     }
   };
@@ -59,7 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signIn, updateProfile, signOut }}>
       {children}
     </AuthContext.Provider>
   );

@@ -22,8 +22,10 @@ import {
   X, 
   Image as ImageIcon, 
   UserCircle, 
-  Gamepad2 
+  Gamepad2,
+  Upload
 } from 'lucide-react-native';
+import { launchImageLibrary } from 'react-native-image-picker';
 import {
   PRIMARY,
   WHITE,
@@ -34,6 +36,7 @@ import {
 import { CommunityFeedStyles as styles } from './CommunityFeedStyle';
 import { Comment ,Post} from '../common-styles/interface';
 import { useAuth } from '../context/AuthContext';
+import UserProfileModal from '../components/UserProfileModal';
 
 const STORAGE_KEY = '@gamorite_posts';
 
@@ -42,7 +45,6 @@ const CommunityFeedScreen = ({ navigation }: any) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
-  const [username, setUsername] = useState('');
   
   // New Post State
   const [newTitle, setNewTitle] = useState('');
@@ -104,14 +106,20 @@ const CommunityFeedScreen = ({ navigation }: any) => {
     setIsModalVisible(false);
   };
 
-  const handleSignIn = () => {
-    if (!username.trim()) {
-      Alert.alert('Error', 'Please enter a username');
-      return;
-    }
-    signIn(username);
+  const handleSignIn = (username: string, avatarUri: string) => {
+    signIn(username, avatarUri);
     setIsLoginModalVisible(false);
-    setUsername('');
+  };
+
+  const handleSelectImage = async () => {
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+      quality: 0.8,
+    });
+
+    if (result.assets && result.assets.length > 0 && result.assets[0].uri) {
+      setNewImageUri(result.assets[0].uri);
+    }
   };
 
   const handleLike = (postId: string) => {
@@ -314,18 +322,16 @@ const CommunityFeedScreen = ({ navigation }: any) => {
             />
 
             <View style={styles.imageInputContainer}>
-                <TextInput
-                    style={[styles.input, {flex: 1, marginBottom: 0}]}
-                    placeholder="Image URL (Optional)"
-                    placeholderTextColor={GRAY_SHADE}
-                    value={newImageUri}
-                    onChangeText={setNewImageUri}
-                />
-                <View style={styles.imageIconBadge}>
-                    <ImageIcon size={20} color={GRAY_SHADE} />
-                </View>
+                <TouchableOpacity onPress={handleSelectImage} style={styles.uploadButton}>
+                    <Upload size={20} color={WHITE} style={{ marginRight: 8 }} />
+                    <Text style={{ color: WHITE }}>Upload Image</Text>
+                </TouchableOpacity>
             </View>
-            <Text style={styles.helperText}>Leave empty for random image</Text>
+            <Text style={styles.helperText}>Optional</Text>
+
+            {newImageUri ? (
+              <Image source={{ uri: newImageUri }} style={{ width: '100%', height: 150, borderRadius: 8, marginTop: 8 }} resizeMode="cover" />
+            ) : null}
 
             <TouchableOpacity style={styles.postButton} onPress={handleCreatePost}>
               <Text style={styles.postButtonText}>POST</Text>
@@ -334,38 +340,13 @@ const CommunityFeedScreen = ({ navigation }: any) => {
         </KeyboardAvoidingView>
       </Modal>
 
-      <Modal
-        visible={isLoginModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setIsLoginModalVisible(false)}
-      >
-        <KeyboardAvoidingView 
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={styles.modalContainer}
-        >
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Enter Username</Text>
-              <TouchableOpacity onPress={() => setIsLoginModalVisible(false)}>
-                <X size={24} color={WHITE} />
-              </TouchableOpacity>
-            </View>
-
-            <TextInput
-              style={styles.input}
-              placeholder="Username"
-              placeholderTextColor={GRAY_SHADE}
-              value={username}
-              onChangeText={setUsername}
-            />
-
-            <TouchableOpacity style={styles.postButton} onPress={handleSignIn}>
-              <Text style={styles.postButtonText}>ENTER</Text>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
+      <UserProfileModal
+        isVisible={isLoginModalVisible}
+        onClose={() => setIsLoginModalVisible(false)}
+        onSubmit={handleSignIn}
+        title="Join Gamorite"
+        submitButtonText="ENTER"
+      />
     </View>
   );
 };
