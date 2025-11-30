@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthProvider } from './src/context/AuthContext';
 import CommuniteyFeed from './src/screens/CommunityFeedScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 /**
  * Sample React Native App 
 *
@@ -39,6 +40,14 @@ function AppContent() {
             name="Home"
             component={CommuniteyFeed}
             options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={{ 
+              headerShown: false,
+              presentation: 'card'
+            }}
           />
           {/* <Stack.Screen
             name="Details"

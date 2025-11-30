@@ -48,20 +48,19 @@ export const CommunityFeedStyles = StyleSheet.create({
     marginBottom: 16,
     overflow: 'hidden',
   },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  postContentContainer: {
     padding: 12,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: WHITE,
+    marginBottom: 4,
   },
   dateText: {
     fontSize: 12,
     color: GRAY_SHADE,
+    marginBottom: 8,
   },
   postImage: {
     width: '100%',
@@ -71,8 +70,8 @@ export const CommunityFeedStyles = StyleSheet.create({
   description: {
     fontSize: 14,
     color: GRAY_SHADE,
-    padding: 12,
     lineHeight: 20,
+    marginBottom: 8,
   },
   actionRow: {
     flexDirection: 'row',

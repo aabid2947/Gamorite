@@ -12,13 +12,24 @@ import {
   KeyboardAvoidingView,
   Platform
 } from 'react-native';
+import Svg, { Text as SvgText, Defs, LinearGradient, Stop } from 'react-native-svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { 
+  Heart, 
+  MessageCircle, 
+  Send, 
+  Plus, 
+  X, 
+  Image as ImageIcon, 
+  UserCircle, 
+  Gamepad2 
+} from 'lucide-react-native';
 import {
   PRIMARY,
   WHITE,
   GRAY_SHADE,
-  RED
+  RED,
+  SECONDARY_ACCENT
 } from '../common-styles/colors';
 import { CommunityFeedStyles as styles } from './CommunityFeedStyle';
 import { Comment ,Post} from '../common-styles/interface';
@@ -26,7 +37,7 @@ import { useAuth } from '../context/AuthContext';
 
 const STORAGE_KEY = '@gamorite_posts';
 
-const CommunityFeedScreen = () => {
+const CommunityFeedScreen = ({ navigation }: any) => {
   const { user, signIn, signOut } = useAuth();
   const [posts, setPosts] = useState<Post[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -150,26 +161,26 @@ const CommunityFeedScreen = () => {
 
   const renderPost = ({ item }: { item: Post }) => (
     <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.cardTitle}>{item.title}</Text>
-        <Text style={styles.dateText}>{new Date(item.createdAt).toLocaleDateString()}</Text>
-      </View>
-
+      {/* Image at the top */}
       {item.imageUri ? (
         <Image source={{ uri: item.imageUri }} style={styles.postImage} resizeMode="cover" />
       ) : null}
 
-      <Text style={styles.description}>{item.description}</Text>
+      <View style={styles.postContentContainer}>
+        <Text style={styles.cardTitle}>{item.title}</Text>
+        <Text style={styles.dateText}>{new Date(item.createdAt).toLocaleDateString()}</Text>
+        <Text style={styles.description}>{item.description}</Text>
+      </View>
 
       <View style={styles.actionRow}>
         <TouchableOpacity 
           style={styles.actionButton} 
           onPress={() => handleLike(item.id)}
         >
-          <Ionicons 
-            name={item.isLiked ? "heart" : "heart-outline"} 
+          <Heart 
             size={20} 
             color={item.isLiked ? RED : WHITE} 
+            fill={item.isLiked ? RED : 'transparent'}
           />
           <Text style={styles.actionText}>{item.likes}</Text>
         </TouchableOpacity>
@@ -178,7 +189,7 @@ const CommunityFeedScreen = () => {
           style={styles.actionButton} 
           onPress={() => toggleCommentSection(item.id)}
         >
-          <Ionicons name="chatbubble-outline" size={20} color={WHITE} />
+          <MessageCircle size={20} color={WHITE} />
           <Text style={styles.actionText}>{item.comments.length}</Text>
         </TouchableOpacity>
       </View>
@@ -207,7 +218,7 @@ const CommunityFeedScreen = () => {
               onChangeText={setCommentText}
             />
             <TouchableOpacity onPress={() => handleAddComment(item.id)} style={styles.sendButton}>
-              <Ionicons name="send" size={20} color={PRIMARY} />
+              <Send size={20} color={PRIMARY} />
             </TouchableOpacity>
           </View>
         </View>
@@ -218,14 +229,33 @@ const CommunityFeedScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Community Feed</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Gamepad2 size={28} color={PRIMARY} style={{ marginRight: 8 }} />
+            <Svg height="30" width="140">
+                <Defs>
+                    <LinearGradient id="grad" x1="0" y1="0" x2="1" y2="0">
+                        <Stop offset="0" stopColor={PRIMARY} stopOpacity="1" />
+                        <Stop offset="1" stopColor={SECONDARY_ACCENT} stopOpacity="1" />
+                    </LinearGradient>
+                </Defs>
+                <SvgText
+                    fill="url(#grad)"
+                    fontSize="24"
+                    fontWeight="bold"
+                    x="0"
+                    y="22"
+                >
+                    GAMORITE
+                </SvgText>
+            </Svg>
+        </View>
         {user ? (
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <TouchableOpacity style={styles.createButton} onPress={() => setIsModalVisible(true)}>
-              <Ionicons name="add" size={24} color={WHITE} />
+              <Plus size={24} color={WHITE} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={signOut} style={{ marginLeft: 16 }}>
-               <Text style={{ color: RED, fontWeight: 'bold' }}>Sign Out</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={{ marginLeft: 16 }}>
+               <UserCircle size={32} color={WHITE} />
             </TouchableOpacity>
           </View>
         ) : (
@@ -262,7 +292,7 @@ const CommunityFeedScreen = () => {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Create Post</Text>
               <TouchableOpacity onPress={() => setIsModalVisible(false)}>
-                <Ionicons name="close" size={24} color={WHITE} />
+                <X size={24} color={WHITE} />
               </TouchableOpacity>
             </View>
 
@@ -292,7 +322,7 @@ const CommunityFeedScreen = () => {
                     onChangeText={setNewImageUri}
                 />
                 <View style={styles.imageIconBadge}>
-                    <Ionicons name="image-outline" size={20} color={GRAY_SHADE} />
+                    <ImageIcon size={20} color={GRAY_SHADE} />
                 </View>
             </View>
             <Text style={styles.helperText}>Leave empty for random image</Text>
@@ -318,7 +348,7 @@ const CommunityFeedScreen = () => {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Enter Username</Text>
               <TouchableOpacity onPress={() => setIsLoginModalVisible(false)}>
-                <Ionicons name="close" size={24} color={WHITE} />
+                <X size={24} color={WHITE} />
               </TouchableOpacity>
             </View>
 
