@@ -1,4 +1,4 @@
-package com.assignment
+package com.gamorite
 
 import android.app.Application
 import com.facebook.react.PackageList
